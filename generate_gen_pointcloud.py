@@ -38,10 +38,10 @@ def gen_pointcloud(
         actions=actions,
         s3_pointcloud_dir=s3_pointcloud_dir)
     (gen_pointcloud_op.container
-     .set_memory_request('15Gi')
-     .set_memory_limit('15Gi')
-     .set_cpu_request('3.5')
-     .set_cpu_limit('3.5')
+     .set_memory_request('12Gi')
+     .set_memory_limit('12Gi')
+     .set_cpu_request('7.5')
+     .set_cpu_limit('7.5')
      .set_gpu_limit(str(gen_pointcloud_num_gpus))
      .add_volume_mount(V1VolumeMount(name='tensorboard', mount_path='/shared/tensorboard'))
      .add_volume_mount(V1VolumeMount(name='shm', mount_path='/dev/shm'))
