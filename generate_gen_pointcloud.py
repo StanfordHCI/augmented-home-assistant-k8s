@@ -26,26 +26,26 @@ def gen_pointcloud(
         actions,
         s3_pointcloud_dir
 ):
-    train_env = {}
+    gen_pointcloud_env = {}
 
-    train_num_gpus = 1
-    train_op = components.load_component_from_file('components/train.yaml')(
+    gen_pointcloud_num_gpus = 1
+    gen_pointcloud_op = components.load_component_from_file('components/gen_pointcloud.yaml')(
         image=image,
         git_rev=git_rev,
         actions=actions,
         s3_pointcloud_dir=s3_pointcloud_dir)
-    (train_op.container
+    (gen_pointcloud_op.container
      .set_memory_request('29Gi')
      .set_memory_limit('29Gi')
      .set_cpu_request('3.5')
      .set_cpu_limit('3.5')
-     .set_gpu_limit(str(train_num_gpus))
+     .set_gpu_limit(str(gen_pointcloud_num_gpus))
      .add_volume_mount(V1VolumeMount(name='tensorboard', mount_path='/shared/tensorboard'))
      .add_volume_mount(V1VolumeMount(name='shm', mount_path='/dev/shm'))
      )
-    (add_env(add_ssh_volume(train_op), train_env)
+    (add_env(add_ssh_volume(gen_pointcloud_op), gen_pointcloud_env)
      .add_toleration(V1Toleration(key='nvidia.com/gpu', operator='Exists', effect='NoSchedule'))
-     .add_node_selector_constraint('beta.kubernetes.io/instance-type', f'g3s.xlarge')
+     .add_node_selector_consgen_pointcloudt('beta.kubernetes.io/instance-type', f'g3s.xlarge')
      .add_volume(V1Volume(name='tensorboard',
                           persistent_volume_claim=V1PersistentVolumeClaimVolumeSource('tensorboard-research-kf')))
      .add_volume(V1Volume(name='shm', empty_dir=V1EmptyDirVolumeSource(medium='Memory')))
