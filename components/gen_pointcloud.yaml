@@ -1,0 +1,59 @@
+name: Train
+description: |
+  Train a TRADE model
+inputs:
+  - { name: image, description: '' }
+  - { name: git_rev, description: '' }
+#  - Flatten tree and put into text file
+#  - Each line is path in tree
+  - { name: actions, description: '' }
+  - { name: s3_pointcloud_dir, description: '' }
+outputs: []
+implementation:
+  container:
+    image: '{{inputs.parameters.image}}'
+    command:
+    - /bin/bash
+    - -e
+    - -c
+    - |
+      . ./lib.sh
+
+      parse_args "$0" "image git_rev actions" "$@"
+      shift $n
+      set -x
+
+      echo "USING ${image}"
+
+      echo "GENERATING POINT CLOUD"
+
+      export SCRIPT_VERSION=${git_rev}
+
+      echo "UPDATE GIT REPO"
+      ./sync-repo.sh
+
+      echo "DOWNLOAD VIRTUALHOME"
+      ./download_virtualhome.sh
+
+      cd /arhome/virtualhome
+
+      echo "GETTING ACTIONS"
+      curl ${actions} --output /arhome/actions.txt
+
+      S3_POINTCLOUD_DIR=${s3_pointcloud_dir}
+
+      while read action; do
+        echo "GENERATING FOR ACTION ${action}"
+        python3 gen_video.py --action $action
+        echo "UPLOADING ACTION ${action}"
+        aws s3 sync --no-progress Output/ $S3_POINTCLOUD_DIR
+      done </arhome/actions.txt
+    
+    args: [
+      'cmd',
+      --image, { inputValue: image },
+      --git_rev, { inputValue: git_rev },
+      --actions, { inputValue: actions },
+      --s3_pointcloud_dir, { inputValue: s3_pointcloud_dir },
+      --,
+    ]
