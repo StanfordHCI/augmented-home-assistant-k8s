@@ -50,7 +50,7 @@ implementation:
 
       while read action; do
         echo "GENERATING FOR ACTION ${action}"
-        python3 gen_video.py --action $action
+        python3 gen_video.py --action_dir /arhome/programs_processed_precond_nograb_morepreconds --action $action
         echo "UPLOADING ACTION ${action}"
         aws s3 sync --no-progress Output/ $S3_POINTCLOUD_DIR
       done </arhome/actions.txt
