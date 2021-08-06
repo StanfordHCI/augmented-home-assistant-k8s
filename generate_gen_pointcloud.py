@@ -45,7 +45,7 @@ def gen_pointcloud(
      )
     (add_env(add_ssh_volume(gen_pointcloud_op), gen_pointcloud_env)
      .add_toleration(V1Toleration(key='nvidia.com/gpu', operator='Exists', effect='NoSchedule'))
-     .add_node_selector_consgen_pointcloudt('beta.kubernetes.io/instance-type', f'g3s.xlarge')
+     .add_node_selector_constraint('beta.kubernetes.io/instance-type', f'g3s.xlarge')
      .add_volume(V1Volume(name='tensorboard',
                           persistent_volume_claim=V1PersistentVolumeClaimVolumeSource('tensorboard-research-kf')))
      .add_volume(V1Volume(name='shm', empty_dir=V1EmptyDirVolumeSource(medium='Memory')))
