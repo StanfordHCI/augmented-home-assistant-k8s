@@ -1,6 +1,6 @@
 from kfp import components
 from kfp import dsl
-from kubernetes.client import V1Toleration
+from kubernetes.client import V1Toleration, V1SecretVolumeSource
 from kubernetes.client.models import (
     V1VolumeMount,
     V1Volume,
@@ -12,6 +12,9 @@ from utils import add_env
 
 
 def add_ssh_volume(op):
+    op.add_volume(V1Volume(name='ssh-v',
+                           secret=V1SecretVolumeSource(secret_name='ssh-secrets-epic-kitchen-kbbbtt9c94',
+                                                       default_mode=0o600)))
     op.container.add_volume_mount(V1VolumeMount(name='ssh-v', mount_path='/root/.ssh'))
     return op
 
