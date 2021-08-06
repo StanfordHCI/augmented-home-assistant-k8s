@@ -19,7 +19,7 @@ implementation:
     - |
       . ./lib.sh
 
-      parse_args "$0" "image git_rev actions" "$@"
+      parse_args "$0" "image git_rev actions s3_pointcloud_dir" "$@"
       shift $n
       set -x
 
