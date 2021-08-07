@@ -19,6 +19,17 @@ RUN npm install -g tslab
 
 RUN mkdir arhome
 
+# get virtualhome - contains python api
+WORKDIR /arhome
+RUN git clone https://github.com/StanfordHCI/virtualhome.git
+WORKDIR /arhome/virtualhome
+RUN python3 -m pip install -r requirements.txt
+
+# Install AWS CLI
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+RUN unzip awscliv2.zip
+RUN ./aws/install
+
 # Install custom code in CURIS directory
 WORKDIR /arhome
 COPY *.sh .
@@ -26,12 +37,6 @@ RUN chmod +x *.sh
 
 RUN mkdir Output
 RUN mkdir Data
-
-# get virtualhome - contains python api
-RUN git clone https://github.com/StanfordHCI/virtualhome.git
-WORKDIR /arhome/virtualhome
-RUN python3 -m pip install -r requirements.txt
-WORKDIR /arhome/
 
 USER root
 CMD ["bash"]
