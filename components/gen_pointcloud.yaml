@@ -40,8 +40,12 @@ implementation:
       echo "START X Server"
       ./init_x11.sh
 
+      sleep 30s
+
       echo "RUN VIRTUAL HOME UNITY APP"
       DISPLAY=:0 ./virtualhome_linux.x86_64 &
+
+      sleep 10s
 
       cd /arhome/virtualhome
 
@@ -54,6 +58,8 @@ implementation:
         echo "UPLOADING ACTION ${action}"
         aws s3 sync --no-progress Output/ $S3_POINTCLOUD_DIR
       done </arhome/actions.txt
+
+      sleep 1h
     
     args: [
       'cmd',
