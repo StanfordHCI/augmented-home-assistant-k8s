@@ -56,10 +56,12 @@ implementation:
         echo "GENERATING FOR ACTION ${action}"
         python3 gen_video.py --action_dir /arhome/programs_processed_precond_nograb_morepreconds --action $action
         echo "COMPRESSING ACTION ${action}"
-        zip -r ../Output.zip ../Output
+
+        export ACTION_FILE=$(basename ${action})
+        zip -r ../${ACTION_FILE}.zip ../Output/${ACTION_FILE}
 
         echo "UPLOADING ACTION ${action}"
-        aws s3 cp --no-progress ../Output.zip $S3_POINTCLOUD_DIR
+        aws s3 cp --no-progress ../${ACTION_FILE}.zip $S3_POINTCLOUD_DIR
       done </arhome/actions.txt
     
     args: [
